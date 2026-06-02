@@ -335,3 +335,12 @@ The `JOIN` clause is used to combine rows from two or more tables, based on a 
 - `RIGHT (OUTER) JOIN`: Returns **all rows from the right table**, and only the matched rows from the left table.
 
 - `FULL (OUTER) JOIN`: Returns **all rows** when there is a match in either the left or right table
+
+Study this in-depth using examples present on the harvard website and w3schools, here are the links : 
+
+https://cs50.harvard.edu/sql/notes/1/#join
+
+https://www.w3schools.com/sql/sql_join.asp
+
+#Todo  Maybe add more stuff related to JOINS here, particularly interview related or helpful for interview.
+
