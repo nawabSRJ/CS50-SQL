@@ -344,3 +344,262 @@ https://www.w3schools.com/sql/sql_join.asp
 
 #Todo  Maybe add more stuff related to JOINS here, particularly interview related or helpful for interview.
 
+### LEFT JOIN & RIGHT JOIN
+Consider a situation where there are two tables namely `sea_lions` and `migrations` in a database. The first table has the data about individual sea lions : id and a name attached to them.
+The migrations table has data about the migration of sea lions : id and distance (traveled by each sea lion).
+
+Now in this situation, there might be a couple of scenarios where we have stopped tracking some of the sea lions and maybe in some cases we have a few sea lions on whom we did not even start our study of migration but still they were entered in out `sea_lions` table.
+
+Now using **INNER JOIN** we can create a SQL query that will have common ids on both the tables and thus will return those records, but as specified earlier there might be some ids on the sea_lions table that aren't in the migrations table and there might be some migrations data on the migrations table which don't have a data on the sea_lions table!!
+Thus there are certain gaps in these 2 tables, if we have to get the results according to either of them then we can use **LEFT JOIN** or **RIGHT JOIN** based on this.
+
+Both LEFT JOIN and the RIGHT JOIN are the same thing, the only difference is the direction or basically the base table, with LEFT JOIN the base table is Left one or the first table mentioned in the query and with RIGHT JOIN, it is the right table or the table mentioned later on in the query.
+So consider this : 
+
+#Example  Consider this image showing both tables : 
+
+![[Pasted image 20260603113546.png]]
+
+Looking at the ids in both we can clearly see the gaps.
+So, to know the migration done by the sea_lions in the sea_lions table we can just INNER JOIN as mentioned earlier, but to see the gaps we will use LEFT JOIN (where we put sea_lions table first)
+
+``` SQL
+SELECT *
+FROM "sea_lions"
+LEFT JOIN "migrations" ON "migrations"."id" = "sea_lions"."id";
+```
+
+This query would retain all sea lion data from the `sea_lions` table — the left one. Some rows in the joined table could be partially blank. This would happen if the right table didn’t have data for a particular ID. Here is the result from PostgreSQL:
+
+![[Pasted image 20260603120238.png]]
+
+
+If we look carefully, the data for Jolee (id 11790) is not present in the migrations table and thus we will see **Jolee** having blank data (or null) in the joined table.
+
+#Question  Can we use JOINS on more than 2 tables?
+
+Absolutely. In fact, joins are **not limited to two tables**. We can join as many tables as needed.
+The pattern is simply:
+
+``` SQL
+SELECT ...
+FROM table1
+JOIN table2
+    ON condition
+JOIN table3
+    ON condition
+JOIN table4
+    ON condition;
+```
+
+
+#Question  If we are trying to join three tables, how can we know which the left or right tables are?
+
+For each JOIN statement, the first table before the keyword is the left one. The one that is involved in the JOIN keyword is the right table.
+
+### FULL JOIN
+A `FULL JOIN` allows us to see the entirety of all tables.
+![[Pasted image 20260603121139.png]]
+
+Notice the null values. Both the left and right tables are joined and the data missing in the combined form is stated as null.
+
+#Todo  Study Natural Join, Not very important, in general avoided as it is risky!!
+
+
+# SETS
+On running a query in SQL, the results we see are called a **Result Set**.
+This is a kind of set in SQL.
+
+The idea comes from **set theory in mathematics**.
+A table result can be thought of as a set of rows, and SQL provides operations to combine or compare those sets.
+
+So using these SQL Set Operations, we can create queries which can help us find common data, merge result sets or 2 queries, find the complement or basically do those typical set ops that we did in Mathematics. 
+
+
+### UNION
+The `UNION` operator is used to combine the result set of two or more SELECT statements.
+
+The `UNION` operator automatically **removes duplicate rows** from the result set.
+Now, there are certain requirements for performing this `UNION` operation :
+
+1) Every `SELECT` statement within `UNION` must have the same number of columns OR in other words, the 2 tables on which `UNION` is performed should have the same number of columns. 
+2) The columns must also have similar data types.
+3) The columns in every `SELECT` statement must also be in the same order.
+
+#Syntax 
+
+``` SQL
+SELECT _column_name(s)_ FROM _table1_  
+UNION  
+SELECT _column_name(s)_ FROM _table2_;
+```
+
+#Example  Consider the same longlist.db database which had these 2 tables : `authors` and `translators` : 
+If we wanted to know about those people who are either an author or a translator, or both, then they belong to the `UNION` of these 2 tables or basically result sets. In other words, we can get this particular *either-or* set by combining the author and translator sets.
+
+![[Pasted image 20260604113637.png|395]]
+
+``` SQL
+SELECT "name" FROM "translators"
+UNION
+SELECT "name" FROM "authors";
+```
+
+Notice that every author and every translator is included in this result set, but only once!
+
+A minor adjustment to the previous query gives us the profession of the person in the result set, based on whether they are an author or a translator.
+
+``` SQL
+SELECT 'author' AS "profession", "name" 
+FROM "authors"
+UNION
+SELECT 'translator' AS "profession", "name" 
+FROM "translators";
+```
+
+The above query will create a new column in the result set called "profession" which will have either 'author' OR 'translator' in them based on what table they come from.
+
+
+### UNION ALL
+Same as above. One simple change : 
+The `UNION ALL` operator includes all rows from each statement, **including any duplicates**.
+
+Same set of [[#UNION|requirements]] as above.
+
+
+### INTERSECT
+This operation is simply used to perform intersection. 
+In other words, returns only rows present in both the sets.
+
+#Example  
+
+``` SQL
+SELECT "name" from "Employees"
+INTERSECT
+SELECT "name" from "Customers";
+```
+
+Let's consider another example from the longlist.db series : 
+
+#Example  In our database of books, we have authors and translators. A person could be either an author or a translator. If the two sets have an intersection, it is also a possible that a person could be both an author and a translator of books. We can use the `INTERSECT` operator to find this set.
+
+![[Pasted image 20260604114252.png|410]]
+
+``` SQL
+SELECT "name" FROM "translators"
+INTERSECT
+SELECT "name" FROM "authors";
+```
+
+
+### EXCEPT
+Returns rows from the first query that are not present in the second.
+
+We can also think of this as 'ONLY X', like there are suppose tables of `Authors` and `Translators` and there is some aspect common in between them too. So you may want to know about the people who are 'ONLY AUTHORS'. In these kinds of situation, the `EXCEPT` operator is used.
+
+![[Pasted image 20260604114938.png|390]]
+
+``` SQL
+SELECT "name" FROM "authors"
+EXCEPT
+SELECT "name" FROM "translators";
+```
+
+Similarly, it is possible to find a set of people who are only translators using `EXCEPT` (just flip the tables in the above query).
+
+#Question  How can we find this set of people who are either authors or translators but not both?
+
+![[Pasted image 20260604115215.png|365]]
+The above Venn diagram is what we are looking for in the question!!
+
+#Todo  The above question.
+
+
+#Question  Could we use `INTERSECT`, `UNION` etc. to perform operations on 3-4 sets?  
+
+Yes, absolutely. To intersect 3 sets, we would have to use the `INTERSECT` operator twice. An important note — we have to make sure to have the same number and same types of columns in the sets to be combined using `INTERSECT`, `UNION` etc.
+
+
+
+# GROUPS
+`GROUP BY` exists because sometimes you're not interested in individual rows anymore.
+
+Instead, you want to treat multiple rows as a **single group** and perform calculations on that group.
+
+The `GROUP BY` statement is used to group rows that have the same values into summary rows, like "Find the number of customers in each country".
+
+The `GROUP BY` statement is almost always used in conjunction with aggregate functions, like `COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()`, to perform calculations on each group.
+
+#Syntax  
+
+``` SQL
+SELECT _column1, aggregate_function(column2), column3, ..._  
+FROM _table_name_  
+WHERE _condition_  
+GROUP BY _column1_, _column3_  
+ORDER BY _column_name_;
+```
+
+#Example  Consider a situation where you have a table called **ratings** (from the same longlist.db database) and this is the structure of that : 
+
+| book_id | rating |
+| ------- | ------ |
+| 1       | 4      |
+| 1       | 3      |
+| 1       | 4      |
+| 2       | 2      |
+| 2       | 3      |
+So on this table if i run :
+
+``` SQL
+SELECT AVG(rating) FROM "ratings";
+```
+
+The above query would give me the average rating of all the books, but what if we want to see the average rating of each individual book, this is where we have to **GROUP** the ratings according to the `book_id` :
+
+``` SQL
+SELECT "book_id", AVG("rating") AS "average rating"
+FROM "ratings"
+GROUP BY "book_id";
+```
+
+In the above query, the `GROUP BY` keyword was used to create groups for each book and then collapse the ratings of the group into an average rating!
+
+If we did NOT use the avg aggregate function, then it would just group the rows based on the column which in this case is `book_id` but from our example table, it seems they are already grouped together.
+
+#Question  Now what if you want to apply some filtering logic on these groups?
+
+Simple, we should use `WHERE`? 
+No❌
+
+This is the caveat here :)
+
+In SQL, filtering logic keyword for individual rows and groups are different.
+We used `WHERE` for individual rows, and we cannot use that on groups.
+Think about it, what we just did in the above query!!
+We are not displaying the individual rows, instead a result that is based on those individual rows, and thus we have to use a different keyword provided by SQL to apply filtering logic on `GROUPS` that is `HAVING` keyword, also termed as `HAVING CLAUSE`.
+
+So, consider that we want to know about the books that have an average rating of >4 (out of 5)
+Then,
+
+``` SQL
+SELECT "book_id", ROUND(AVG("rating"), 2) AS "average rating"
+FROM "ratings"
+GROUP BY "book_id"
+HAVING "average rating" > 4.0;
+```
+
+#Question  What if, we wanted to count only those rows where the rating was >4 and then count the average of that, in this question, the filtering logic is not based on the groups, rather individual ratings!!
+#Todo  above question
+
+#Tip  Always question : What is the thing on which filtering logic is applied ?
+
+If the answer is "individual rows" : `WHERE` Clause
+If the answer is "groups" : `HAVING` Clause
+
+----
+
+
+
+
+
