@@ -597,7 +597,25 @@ HAVING "average rating" > 4.0;
 If the answer is "individual rows" : `WHERE` Clause
 If the answer is "groups" : `HAVING` Clause
 
+#### In combination with ORDER BY
+The basic logic to construct a SQL query becomes a very important aspect here. We need to know and have a sense of what comes first so that we don't always have to learn what to place where.
+
+The general logic says, filter first order later. Think about it, we will filter records first and then only order them and at last limit them as well. So here this is an ideal #example of how to place ORDER BY along with GROUP BY and HAVING Clause :
+
+``` SQL
+SELECT "book_id", ROUND(AVG("rating"), 2) AS "average rating" 
+FROM "ratings"
+GROUP BY "book_id"
+HAVING "average rating" > 4.0  --column we created above
+ORDER BY "average rating" DESC
+LIMIT 5;
+```
+
+
+----END OF LECTURE----
+
 ----
+---
 
 
 
