@@ -611,6 +611,11 @@ ORDER BY "average rating" DESC
 LIMIT 5;
 ```
 
+The Structure : 
+``` SQL
+WHERE → GROUP BY → HAVING → ORDER BY → LIMIT
+```
+
 
 ----END OF LECTURE----
 
