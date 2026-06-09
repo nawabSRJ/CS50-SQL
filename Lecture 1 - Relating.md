@@ -122,7 +122,7 @@ Without keys:
 An identifier that is unique for every item in the table.
 The `PRIMARY KEY` constraint uniquely identifies each record in a database table.
 
-A `PRIMARY KEY` constraint ensures unique values, and cannot contain NULL values and thus it is a combination of both a `UNIQUE` constraint and a `NOT NULL`
+A `PRIMARY KEY` constraint ensures unique values, and cannot contain NULL values and thus it is a combination of both a `UNIQUE` constraint and a `NOT NULL`.
 
 A table can have only ONE `PRIMARY KEY` constraint. The primary key can either be a single column, or a combination of columns.
 
@@ -136,7 +136,6 @@ CREATE TABLE Persons (
     Age int  
 );
 ```
-
 
 #Example of creating a primary key on multiple columns : 
 

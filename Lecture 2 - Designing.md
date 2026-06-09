@@ -372,6 +372,56 @@ CREATE TABLE Orders (
 ```
 
 
+### AUTO INCREMENT
+Increment the value of a particular column automatically by a specified number.
+This once again, has different keywords for different DBMS. The method overall is the same, defining the constraint while defining the column.
+
+#Syntax  **For MySQL** :
+
+MySQL uses the `AUTO_INCREMENT` keyword to perform an auto-increment feature.
+
+The following SQL defines the `Personid` column to be an auto-increment primary key field in the "Persons" table:
+``` SQL
+CREATE TABLE Persons (  
+    Personid int AUTO_INCREMENT PRIMARY KEY,  
+    LastName varchar(255) NOT NULL,  
+    FirstName varchar(255),  
+    Age int  
+);
+```
+The default starting value for `AUTO_INCREMENT` is 1, and it will increment by 1 for each new record.
+
+To let `AUTO_INCREMENT` start with another value, use the following SQL statement:
+``` SQL
+ALTER TABLE Persons AUTO_INCREMENT = 100;
+```
+
+When we insert a new record into the "Persons" table, we will NOT have to specify a value for the `Personid` column, a unique value will be added automatically, and thus insertion query will be : 
+``` SQL
+INSERT INTO Persons (FirstName, LastName)  
+VALUES ('Lars', 'Monsen');
+```
+
+#Syntax  **For SQL SERVER** :
+The SQL Server uses the `IDENTITY` keyword to perform an auto-increment feature.
+
+The following SQL defines the `Personid` column to be an auto-increment primary key field in the "Persons" table:
+``` SQL
+CREATE TABLE Persons (  
+    Personid int IDENTITY(1,1) PRIMARY KEY,  -- IDENTITY(START, STEP)
+    LastName varchar(255) NOT NULL,  
+    FirstName varchar(255),  
+    Age int  
+);
+```
+In the example above, the starting value for `IDENTITY` is 1, and it will increment by 1 for each new record.
+
+#Tip  To specify that the `Personid` column should start at value 10 and increment by 5, change it to `IDENTITY(10,5)`.
+
+#Todo  Look for the PostgreSQL auto increment, it uses some ALWAYS, BY DEFAULT
+
+
+
 ### COLUMN LEVEL VS TABLE LEVEL CONSTRAINTS
 Column level : Defined immediately after a column definition.
 Table level : Declared separately after the column definitions.

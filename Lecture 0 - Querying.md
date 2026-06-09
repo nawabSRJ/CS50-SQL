@@ -55,6 +55,7 @@ One more important #Syntax to remember is that OFFSET if always defined after th
 
 	LIMIT number_of_rows OFFSET number_of_rows_to_skip
 
+Always remember : `Filtering -> Ordering -> Limiting` This is the order of writing SQL query.****
 
 # WHERE
 Allows to get back or retrieve NOT all rows but only some rows where some condition is true.
@@ -115,7 +116,7 @@ We can also pair AND, OR with '()' parenthesis and make more complex conditional
 Null in SQL is a datatype that signifies nothingness. In non-technical informal language we can attribute that NULL and ZERO are the same thing, but in computer science that's not always the case.
 
 NULL can be used in SQL queries to find out what data is missing in the database.
-It can also be combined with NOT operator and thus used to figure out what's NOT missing as a counter intuitive function of the NULL only query.
+It can also be **combined with NOT operator** and thus used to figure out what's NOT missing as a counter intuitive function of the NULL only query.
 
 #Example 
 
@@ -149,10 +150,11 @@ __ : is used when we want to find according to exact no. of characters in a patt
 Look at the above query - this is a way to find movie names from table CINEMA that will get you the movies with an actor who has 'Khan' in his/her name.
 
 Notice how we have used % sign both before and after, so this will get us names like :
-Name Khan
-Khan Surname
-Name Khan Surname
-…
+``` SQL
+Name "Khan"
+"Khan" Surname
+Name "Khan" Surname
+```
 
 It will basically look for all the matches where name has 'Khan' anywhere
 But, consider this query : 
@@ -171,6 +173,9 @@ And not like :
 #Example 
 
 	SELECT MOVIE_NAME FROM CINEMA WHERE NOT ACTOR LIKE '%Khan';
+	SELECT MOVIE_NAME FROM CINEMA WHERE ACTOR NOT LIKE '%Khan';
+
+Both the above queries are **valid**. Placing "NOT" is quite flexible.
 
 #Question What if we want to search movie names who have 'The' in their first character, by this i don't mean only 'The' but also words like 'Then', 'There', 'Their' etc ~ words which are either 'The' or have 'The' as a substring.
 
@@ -203,7 +208,7 @@ SQL keyword used to find values in a certain range, almost always paired with AN
 
 	SELECT MOVIE_NAME, RELEASE_YEAR FROM CINEMA WHERE RELEASE_YEAR BETWEEN 2010 AND     2014;
 
-NOTE : Here both the values on either side of BETWEEN are inclusive. So in the above query we will get movies from 2010 (inclusive) to 2014 (inclusive) or we can say from start of 2010 to end of 2014.
+NOTE : Here both the values on either side of BETWEEN are **INCLUSIVE**. So in the above query we will get movies from 2010 (inclusive) to 2014 (inclusive) or we can say from start of 2010 to end of 2014.
 
 
 # ORDER BY
@@ -246,8 +251,7 @@ Coming back to the previous example to fix this and actually get the top 10 movi
 	ORDER BY COLUMN DESC
 
 
-COMPOUND ORDERING
--------------------------
+## COMPOUND ORDERING
 This is one of the most interesting concepts or extension of simple ORDER BY clause.
 Consider a situation in your CINEMA table where the rating of 2 movies is same and you want to have a deeper look despite the same rating and know which one was loved more by the audience. So assume there is a column in the same table named as "votes". This column tells the no. of votes made by the audience which played just a little part on deciding the rating for the movie.
 So now you want to apply ORDER BY but in compound combination of 2 metrics or columns - RATING and VOTES.
@@ -256,7 +260,7 @@ Here is how this is done:
 
 	SELECT MOVIE_NAME, RATING, VOTES FROM CINEMA ORDER BY RATING DESC, VOTES DESC        LIMIT 10;
 
-So, we are going to use comma to separate columns after ORDER BY, also we can use and in fact we should use ASC/DESC after the column name just for the sanity of understanding.
+So, we are going to **use comma** to separate columns after ORDER BY, also we can use and in fact we should use **ASC/DESC** after the column name just for the sanity of understanding.
 
 #Syntax 
 
@@ -286,10 +290,12 @@ AVG
 
 The above query will give us the average of all the values in the ratings column or in other words, the average rating of all the movies in our database.
 
-Result will look somewhat like : 
-----------------
+**Result will look somewhat like :** 
+``` SQL
 AVG(RATING)
+-----------
 3.753797923
+```
 
 Now what we want here is to make it look more presentable and thus we can maybe use ROUND() function to round the result to N decimal places. This is how it can be done:
 
@@ -297,25 +303,27 @@ Now what we want here is to make it look more presentable and thus we can maybe 
 
 ROUND() function takes 2 arguments - metric or value to round, no. of decimal places to round to
 
-Result here will look like :
---------------
+**Result here will look like :**
+``` SQL
 ROUND(AVG(RATING), 2)
+------------------
 3.75
+```
 
-Using Aliases
-----
+## Using Aliases
 To make things look more organized and pretty or more understandable, we can use aliases
 #Example 
 
 	SELECT ROUND(AVG(RATING), 2) AS 'Average Rating' FROM CINEMA;
 
-Result here will look like :
---------------
+**Result here will look like :**
+``` SQL
 Average Rating
+------------
 3.75
+```
 
-COUNT
-----
+## COUNT
 Simply count the no. of rows. 
 
 #Syntax To count the no. of rows :
